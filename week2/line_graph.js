@@ -1,4 +1,6 @@
 const padding = 50;
+const months = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli',
+				'augustus', 'september', 'oktober', 'november', 'december'];
 document.addEventListener("DOMContentLoaded", function() {
 	// collects data from index.html	
 	// remember lists to fill later
@@ -23,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		dates.push(d);
 		temp.push(parseInt(data[1]));
 	}
-	
+
 	// create canvas
 	var canvas = document.getElementById('myCanvas');
 	var ctx = canvas.getContext('2d');
@@ -49,6 +51,31 @@ document.addEventListener("DOMContentLoaded", function() {
 		ctx.lineTo(xTemp, yTemp);
 	}
 	ctx.stroke();
+
+	// annotate y axis
+	for (var i = -100; i < minmax[1]; i += 50){
+		var yZero = yData(i);
+		ctx.fillText((i / 10), 0, yZero, padding);
+		ctx.moveTo(padding, yZero);
+		ctx.lineTo(padding - 10, yZero);
+	}
+	ctx.stroke();
+
+	// annotate x axis
+	var xMonth = createTransform([0, 11], [padding, canvas.width - 50]);
+	var month = 1000;
+	for (var i = 0; i < dates.length; i++){
+		var curr_month = dates[i].getMonth();
+		if (curr_month != month){
+			month = curr_month;
+			var xCoord = xMonth(month);
+			ctx.fillText(months[month], xCoord - 10, canvas.height - 25);
+			ctx.moveTo(xCoord, canvas.height - padding);
+			ctx.lineTo(xCoord, canvas.height - padding + 10);
+		}
+	}
+	ctx.stroke();
+
 })
 function seekMinMax(data){
 	// iterate over array to find min and max
