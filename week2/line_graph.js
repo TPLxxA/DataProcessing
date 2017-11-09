@@ -1,9 +1,10 @@
+const padding = 50;
 document.addEventListener("DOMContentLoaded", function() {
 	// collects data from index.html	
 	// remember lists to fill later
 	var dates = [];
 	var temp = [];
-
+	
 	// collect rawdata from index.html
 	var rawdata = document.getElementById("rawdata");
 	
@@ -22,20 +23,47 @@ document.addEventListener("DOMContentLoaded", function() {
 		dates.push(d);
 		temp.push(parseInt(data[1]));
 	}
-	console.log(temp);
-	console.log(dates);
-
+	
 	// create canvas
 	var canvas = document.getElementById('myCanvas');
 	var ctx = canvas.getContext('2d');
 	
 	// create x and y axis
 	ctx.beginPath();
-	ctx.moveTo(50, 0);
-	ctx.lineTo(50, canvas.height - 50);
-	ctx.lineTo(canvas.width, canvas.height - 50)
+	ctx.moveTo(padding, 0);
+	ctx.lineTo(padding, canvas.height - padding);
+	ctx.lineTo(canvas.width, canvas.height - padding)
+	ctx.stroke();
+
+	// prepare to draw graph
+	var minmax = seekMinMax(temp);
+	ctx.moveTo(padding, 0);
+
+	// calculate coordinates for every data point
+	var xData = createTransform([0, temp.length], [padding, canvas.width]);
+	var yData = createTransform(minmax, [canvas.height - padding, 0]);
+	for (var i = 0; i < temp.length; i++){
+		var xTemp = xData(i);
+		var yTemp = yData(temp[i]);
+		// draw graph
+		ctx.lineTo(xTemp, yTemp);
+	}
 	ctx.stroke();
 })
+function seekMinMax(data){
+	// iterate over array to find min and max
+	var min = 0;
+	var max = 0;
+	for (var i = 0; i < data.length; i++){
+		if (data[i] < min){
+			min = data[i];
+		}
+		else if (data[i] > max){
+			max = data[i];
+		}
+	}
+	return [min, max];
+}
 
 function createTransform(domain, range){
 	// domain is a two-element array of the data bounds [domain_min, domain_max]
