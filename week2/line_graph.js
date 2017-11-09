@@ -1,8 +1,16 @@
+/**
+Casper van Velzen
+11030275
+Minor Programmeren / Data processing
+creates a graph of the temerature in de Bilt in 1997
+*/
 const padding = 50;
 const months = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli',
 				'augustus', 'september', 'oktober', 'november', 'december'];
 document.addEventListener("DOMContentLoaded", function() {
-	// collects data from index.html	
+	/**
+	collects data from index.html	
+	*/
 	// remember lists to fill later
 	var dates = [];
 	var temp = [];
@@ -20,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		var yyyy = data[0].substr(2, 4);
 		var mm = data[0].substr(6, 2);
 		var dd = data[0].substr(8, 2);
-		d = new Date(yyyy, mm, dd);
+		var d = new Date(yyyy, mm, dd);
 		// put data in arrays
 		dates.push(d);
 		temp.push(parseInt(data[1]));
@@ -60,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		ctx.lineTo(padding - 10, yZero);
 	}
 	ctx.stroke();
+
 
 	// annotate x axis
 	var xMonth = createTransform([0, 11], [padding, canvas.width - 50]);
