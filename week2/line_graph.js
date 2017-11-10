@@ -7,33 +7,25 @@ creates a graph of the temerature in de Bilt in 1997
 const padding = 50;
 const months = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli',
 				'augustus', 'september', 'oktober', 'november', 'december'];
-document.addEventListener("DOMContentLoaded", function() {
-	/**
-	collects data from index.html	
-	*/
-	// remember lists to fill later
-	var dates = [];
-	var temp = [];
-	
-	// collect rawdata from index.html
-	var rawdata = document.getElementById("rawdata");
-	
-	// split all rows
-	var rows = rawdata.value.split("\n");
+var dates = [];
+var temp = [];
 
-	// split every row into dates and temp
-	for (var i = 0; i < rows.length - 1; i++) {
-		var data = rows[i].split(",");
-		// split date into YYYYMMDD
-		var yyyy = data[0].substr(2, 4);
-		var mm = data[0].substr(6, 2);
-		var dd = data[0].substr(8, 2);
-		var d = new Date(yyyy, mm, dd);
-		// put data in arrays
-		dates.push(d);
-		temp.push(parseInt(data[1]));
-	}
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+    	var rawdata = xhttp.response;
+    	
+    	rawdata = parseData(rawdata);
+    	temp = rawdata[1];
+    	dates = rawdata[0];
+    	
+    	createCanvas(temp, dates);
+    }
+};
+xhttp.open("GET", "KNMI_19971231.txt", true);
+xhttp.send();
 
+function createCanvas(temp, dates){
 	// create canvas
 	var canvas = document.getElementById('myCanvas');
 	var ctx = canvas.getContext('2d');
@@ -63,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	// annotate y axis
 	for (var i = -100; i < minmax[1]; i += 50){
 		var yZero = yData(i);
-		ctx.fillText((i / 10), 0, yZero, padding);
+		ctx.fillText((i / 10), 25, yZero, padding);
 		ctx.moveTo(padding, yZero);
 		ctx.lineTo(padding - 10, yZero);
 	}
@@ -84,8 +76,26 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}
 	ctx.stroke();
+}
+function parseData(rawdata){
+	// split all rows
+	var rows = rawdata.split("\n");
 
-})
+	// split every row into dates and temp
+	for (var i = 0; i < rows.length - 1; i++) {
+		var data = rows[i].split(",");
+		// split date into YYYYMMDD
+		var yyyy = data[1].substr(2, 4);
+		var mm = data[1].substr(6, 2);
+		var dd = data[1].substr(8, 2);
+		var d = new Date(yyyy, mm, dd);
+		// put data in arrays
+		dates.push(d);
+		temp.push(parseInt(data[2]));
+	}
+	return [dates, temp];
+}
+
 function seekMinMax(data){
 	// iterate over array to find min and max
 	var min = 0;
