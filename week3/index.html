@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<script src="https://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+		<script src="barchart.js"></script>
+
+		<title>Rainfall in April '17</title>
+		<style>
+			.bar {
+			  fill: steelblue;
+			}
+
+			.chart {
+				margin-left: auto;
+				margin-right: auto;
+				display: block;
+			}
+
+			.axis text {
+			  font: 10px sans-serif;
+			}
+
+			.axis path,
+			.axis line {
+			  fill: none;
+			  stroke: #000;
+			  shape-rendering: crispEdges;
+			}
+
+			.x.axis path {
+			  display: none;
+			}
+
+			.y.axis path {
+				display: none;
+			}
+		}
+		</style>
+	</head>
+	<body>
+		<h1>Rainfall in April '17</h1>
+		<h2>By Casper van Velzen</h2>
+		<svg class="chart"></svg>
+		<a href="http://projects.knmi.nl/klimatologie/daggegevens/selectie.cgi">Data from KNMI</a>
+	</body>
+</html>
