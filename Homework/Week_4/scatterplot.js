@@ -80,7 +80,7 @@ window.onload = function() {
   tip = d3.tip()
     .attr("class", "tip")
     .html(function(d){
-      return "<span>" + d.country + "</span>";
+      return "<span>" + d.country + "</span><span> " + d.ldi + "</span>";
     });
 
   // color scaling
