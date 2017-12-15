@@ -95,7 +95,7 @@ window.onload = function() {
 	      .rangeRound([height, 0]);
 
 	  var z = d3.scaleOrdinal()
-	      .range(["#98abc5", "#ff8c00"]);
+	      .range(["#f7f905", "#32f905"]);
 
 	  // prepare data
 	  var data = [];
