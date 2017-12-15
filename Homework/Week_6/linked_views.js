@@ -19,14 +19,15 @@ window.onload = function() {
 	function data_loaded(error, qoli_data, ppi_all_data, safety_index_data) {
 		if (error) throw error;
 		double_bar(qoli_data, safety_index_data);
+		// initially creates line graph layout without line
 		line_graph(ppi_all_data);
 
 	function line_graph(ppi_data) {
+		// remove previous line
 		d3.selectAll(".g")
 			.remove();
 
-
-		// gives an error on load, because it has no data, but that's fine
+		// make data easier to work with
 	    var country_data = ppi_data;
 	    var data = [{year: 2014, ppi: country_data['ppi2014']}, {year: 2015, ppi: country_data['ppi2015']}, 
 	    		{year: 2016, ppi: country_data['ppi2016']}, {year: 2017, ppi: country_data['ppi2017']}];
@@ -43,6 +44,7 @@ window.onload = function() {
 	    var y = d3.scaleLinear()
 	        .rangeRound([height, 0]);
 
+	    // create line
 	    var line = d3.line()
 	        .x(function(d) { return x(d.year); })
 	        .y(function(d) { return y(d.ppi); });
@@ -56,6 +58,7 @@ window.onload = function() {
 	          	.ticks(4)	
 	          	.tickFormat(function(d) { return d; }));
 
+	      // create y axis
 	      g.append("g")
 	          .call(d3.axisLeft(y))
 	        .append("text")
@@ -67,6 +70,7 @@ window.onload = function() {
 	          .attr("text-anchor", "end")
 	          .text("purchasing power index");
 
+	      // create x axis
 	      g.append("path")
 	          .datum(data)
 	          .attr("fill", "none")
@@ -104,12 +108,14 @@ window.onload = function() {
 	  	data[i] = {country: qoli_data[i]['country'], qoli: qoli_data[i]['qoli'], si: safety_index_data[i]['safety_index']};
 	  }
 
+	  // decide what data is used for each bar
 	  var keys = ['si', 'qoli'];
 
 	  x0.domain(data.map(function(d) { return d.country; }));
       x1.domain(keys).rangeRound([0, x0.bandwidth()]);
       y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
 
+      // create bars
       g.append("g")
       .selectAll("g")
       .data(data)
@@ -124,25 +130,28 @@ window.onload = function() {
         .attr("height", function(d) { return height - y(d.value); })
         .attr("fill", function(d) { return z(d.key); });
 
+        // create x axis
 		g.append("g")
-	          .attr("class", "axis")
-	          .attr("transform", "translate(0," + height + ")")
-	        .call(d3.axisBottom(x0))
-	        .selectAll("text")
-	          .style("text-anchor", "end")
-        	  .attr("dx", "-.8em")
-        	  .attr("dy", "-.75em")
-	          .attr("transform", "rotate(-90)")
-	          .on("mouseover", function(d) { d3.select(this).style("cursor", "pointer"); })
-	          .on("mouseout", function(d) { d3.select(this).style("cursor", "default"); })
-	          .on("click", function(d) { for (var i = 0; i < 28; i = i + 1) {
-	          	if (d == ppi_all_data[i]['country']) {
-	          	console.log(d);
-	          	line_graph(ppi_all_data[i]);
-	          	};
-	          }; 
-	          });
+          .attr("class", "axis")
+          .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x0))
+        .selectAll("text")
+          .style("text-anchor", "end")
+    	  .attr("dx", "-.8em")
+    	  .attr("dy", "-.75em")
+          .attr("transform", "rotate(-90)")
+          .on("mouseover", function(d) { d3.select(this).style("cursor", "pointer"); })
+          .on("mouseout", function(d) { d3.select(this).style("cursor", "default"); })
+          // calls line graph function with data for correct country
+          .on("click", function(d) { for (var i = 0; i < 28; i = i + 1) {
+          	if (d == ppi_all_data[i]['country']) {
+          	console.log(d);
+          	line_graph(ppi_all_data[i]);
+          	};
+          }; 
+      });
 
+        // create y axis
 	    g.append("g")
 	        .attr("class", "axis")
 	        .call(d3.axisLeft(y).ticks(null, "s"))
@@ -155,6 +164,7 @@ window.onload = function() {
 	        .attr("text-anchor", "start")
 	        .text("Index score");
 
+	    // create legend
 	    var legend = g.append("g")
 	        .attr("font-family", "sans-serif")
 	        .attr("font-size", 10)
